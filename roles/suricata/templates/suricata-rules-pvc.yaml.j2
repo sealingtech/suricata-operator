@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations: {}
+  labels:
+    created-by: {{ suricata.name }}-update
+    name: {{ suricata.fullname }}-rules-pvc
+  namespace: {{ suricata.namespace }}
+  name: {{ suricata.fullname }}-rules-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: edcop-nfs
+  resources:
+    requests:
+      storage: 5Gi

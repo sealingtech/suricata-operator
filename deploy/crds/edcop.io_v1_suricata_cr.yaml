@@ -1,0 +1,7 @@
+apiVersion: edcop.io/v1
+kind: Suricata
+metadata:
+  name: example-suricata
+spec:
+  # Add fields here
+  size: 3

@@ -1,0 +1,91 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ suricata.fullname }}-update
+  namespace: {{ suricata.namespace }}
+  labels:
+    app: {{ suricata.name }}-update
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ suricata.name }}-update
+      annotations:
+        "helm.sh/hook": "pre-install"  # Run before all other services start
+        networks: '[
+        { "name": "{{ networks.overlay }}" }
+      ]'
+    spec:
+      serviceAccountName: {{ suricata.fullname }}
+      containers:
+      - name: suricata-rules
+        image: {{ images.suricata }}
+        command: [ "bash", "-c", "/update-entrypoint.sh" ]
+        env:
+        - name: CHART_PREFIX
+          value: {{ suricata.fullname }}
+        volumeMounts:
+        - name: suricata-config
+          mountPath: /etc/suricata/
+        - name: suricata-rules-pvc
+          mountPath: /var/lib/suricata/rules
+      volumes:
+      - name: suricata-config
+        configMap: 
+          name: {{ suricata.fullname }}-config
+      - name: suricata-rules-pvc
+        persistentVolumeClaim:
+          claimName: {{ suricata.fullname }}-rules-pvc
+      restartPolicy: OnFailure 
+      dnsPolicy: ClusterFirst
+        
+---
+
+{% if suricataConfig.enableRulesUpdates  %}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ suricata.fullname }}-update
+  labels:
+    app: {{ suricata.name }}-update
+spec:
+  schedule: "{{ suricataConfig.rulesUpdateSchedule }}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ suricata.name }}-update
+          annotations:
+            networks: '[
+            { "name": "{{ networks.overlay }}" }
+          ]'
+        spec:
+          serviceAccountName: {{ suricata.fullname }}
+          containers:
+          - name: suricata-update
+            image: {{ images.suricata }}
+            command: [ "bash", "-c", "/update-entrypoint.sh" ]
+            env:
+            - name: CHART_PREFIX
+              value: {{ suricata.fullname  }}
+            volumeMounts:
+            - name: suricata-config
+              mountPath: /etc/suricata/
+            - name: suricata-rules-pvc
+              mountPath: /var/lib/suricata/rules
+          volumes:
+          - name: suricata-update-config
+            configMap: 
+              name: {{ suricata.fullname }}-config
+          - name: suricata-rules-pvc
+            persistentVolumeClaim:
+              claimName: {{ suricata.fullname }}-rules-pvc
+          - name: suricata-config
+            configMap:
+              name: {{ suricata.fullname }}-config
+          restartPolicy: OnFailure 
+          dnsPolicy: ClusterFirst
+{% endif %}

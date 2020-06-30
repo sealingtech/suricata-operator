@@ -1,0 +1,34 @@
+---
+# tasks file for suricata
+#- name: Create Suricata logstash configmap
+#  k8s:
+#    state: present
+#    definition: "{{ lookup('template', './logstash-suricata-config.yaml.j2')}}" 
+#- name: Create Suricata logstash pipeline
+#  k8s:
+#    state: present
+#    definition: "{{ lookup('template', './logstash-suricata-config.yaml.j2')}}" 
+- name: Create Suricata redis external service
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './redis-suricata-external-service.yaml.j2')}}"
+- name: Create Suricata configmap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './suricata-config.yaml.j2')}}" 
+- name: Create Suricata daemonset
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './suricata-daemonset.yaml.j2')}}" 
+- name: Create Suricata rbac
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './suricata-rbac.yaml.j2')}}" 
+- name: Create Suricata rules pvc
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './suricata-rules-pvc.yaml.j2')}}"
+- name: Create rules updater
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './suricata-rules-updater.yaml.j2')}}"
