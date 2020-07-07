@@ -1,0 +1,19 @@
+annotations:
+      {% if networks.useHostNetworking %}
+          networks: '[
+          { "name": "{{  networks.overlay }}" },
+        ]'
+      {% else %}
+        {% if suricataConfig.inline %}
+          networks: '[
+          { "name": {{  networks.overlay }} },
+          { "name": {{  networks.net1 }} },
+          { "name": {{  networks.net2 }} }
+        ]'
+        {% else %}
+          networks: '[
+          { "name": {{  networks.overlay }} },
+          { "name": {{  networks.net1 }} }
+        ]'
+        {% endif %}
+      {% endif %}

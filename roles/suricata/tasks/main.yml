@@ -1,13 +1,14 @@
 ---
 # tasks file for suricata
-#- name: Create Suricata logstash configmap
-#  k8s:
-#    state: present
-#    definition: "{{ lookup('template', './logstash-suricata-config.yaml.j2')}}" 
-#- name: Create Suricata logstash pipeline
-#  k8s:
-#    state: present
-#    definition: "{{ lookup('template', './logstash-suricata-config.yaml.j2')}}" 
+- name: Create Suricata logstash configmap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './logstash-suricata-config.yaml.j2')}}" 
+- name: Create Suricata logstash pipeline
+  k8s:
+    state: present
+    definition: "{{ lookup('template', './logstash-suricata-pipeline.yaml.j2')}}"
+
 - name: Create Suricata redis external service
   k8s:
     state: present

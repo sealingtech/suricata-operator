@@ -32,7 +32,7 @@ deploymentOptions:
     nodePort: 30029
 suricataConfig:
   #If inline is set to true the Suricata pod will have three network interfaces, and will be set to take layer 2 traffic in and output it to the other interface as well as connected to the overlay network.  If the option is set to false then Suricata will have two interfaces, one for the passive and the other for the network.
-  inline: false
+  inline: true
   #If alertsOnly is set to true then Suricata will not record logs for http,dns,tls,smtp. This is common when using another tool that may already be recording this such as Bro.
   alertsOnly: false
   #Specifies internal networks that will be monitored.  This sets the direction of rules.

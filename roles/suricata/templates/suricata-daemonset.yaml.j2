@@ -15,11 +15,23 @@ spec:
       labels:
         app: suricata
       annotations:
-	{%- if networks.useHostNetworking -%}name: hello
-	{%- endif -%}
-	name2: hello2
+        networks: '[
+        {% if networks.useHostNetworking == true %}
+          {"name": "{{networks.overlay}}"},
+        {% else %}
+          {% if suricata.Config.inline %}
+            {"name": "{{networks.overlay}}"},
+            {"name": "{{networks.net1 }}"},
+            {"name": "{{networks.net2 }}" }
+          {% else %}
+            {"name": "{{networks.overlay}}"} ,
+            {"name": "{{networks.net1}}" }
+          {% endif %}
+        {% endif %}
+        ]'
     spec:
-      hostNetwork: true 
+      {% if networks.useHostNetworking %}hostNetwork: true{% endif %}
+
       initContainers:
       - name: verifynode
         image: {{ images.runner }}
@@ -33,11 +45,15 @@ spec:
               name: passive-interface
               {% endif %}
               key: interface
+        {%- if suricataConfig.inline == true %}
+        
         - name: INTERFACE2
           valueFrom:
             secretKeyRef:
               name: inline-interface2
               key: interface
+        {%- endif %}
+
         - name: STARTUP_SCRIPT
           value: |
             #!/bin/bash
@@ -67,21 +83,24 @@ spec:
                 - NET_ADMIN
                 - SYS_NICE #Needed for CPU pinning
                 - NET_RAW
-        env:
-        - name: INTERFACE1
-          valueFrom:
-            secretKeyRef:
-              {% if suricataConfig.inline %}
-              name: inline-interface1
-              {% else %}
-              name: passive-interface
-              {% endif %}
-              key: interface
-        - name: INTERFACE2
-          valueFrom:
-            secretKeyRef:
-              name: inline-interface2
-              key: interface
+        env: 
+          - name: INTERFACE1
+            valueFrom: 
+              secretKeyRef: 
+                {% if suricataConfig.inline == true -%}
+                name: inline-interface1
+                {% else -%}
+                name: passive-interface
+                {%- endif -%}
+                key: interface
+          {% if suricataConfig.inline -%}
+          - name: INTERFACE2
+            valueFrom: 
+              secretKeyRef:
+                name: inline-interface2
+                key: interface
+          {%- endif %}
+
         volumeMounts:
           - mountPath:  /tmp/suricata
             name: suricata-config
@@ -109,6 +128,8 @@ spec:
           limits:
             cpu: "{{ redisConfig.limits.cpu }}"
             memory: "{{ redisConfig.limits.memory }}"
+
+      {% if deploymentOptions.deployment == "standalone" -%}
       - name: logstash
         image: {{ images.logstash }}
         imagePullPolicy: Always
@@ -127,6 +148,7 @@ spec:
             name: logstash-suricata-pipeline
           - mountPath: /usr/share/logstash/config
             name: logstash-suricata-config
+      {%- endif %}
 
       volumes:
       - name: suricata-logs
@@ -137,12 +159,14 @@ spec:
       - name: suricata-rules-pvc
         persistentVolumeClaim:
           claimName: {{ suricata.fullname }}-rules-pvc
+      {% if deploymentOptions.deployment == "standalone" -%}
       - name: logstash-suricata-config
         configMap:
           name: logstash-{{ suricata.fullname  }}-config
       - name: logstash-suricata-pipeline
         configMap:
           name: logstash-{{ suricata.fullname }}-pipeline
+     {%- endif %}
 
       restartPolicy: Always
       dnsPolicy: ClusterFirst
