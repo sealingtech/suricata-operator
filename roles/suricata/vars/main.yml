@@ -5,7 +5,7 @@ suricata:
   namespace: default
 images:
   #Repositories to pull images from
-  suricata: gcr.io/edcop-dev/suricata:0.9.16
+  suricata: gcr.io/edcop-dev/mbaker-suricata:v5.0.3
   logstash: docker.elastic.co/logstash/logstash:6.4.2
   redis: redis:4.0.9
   runner: gcr.io/edcop-public/runner:8
