@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: logstash-{{ suricata.fullname }}-pipelin  
+  name: logstash-{{ suricata.fullname }}-pipeline
   namespace: {{ suricata.namespace }}
 data:
   suricata.conf: |
