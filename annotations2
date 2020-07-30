@@ -1,9 +1,0 @@
-        {% if networks.useHostNetworking == true %}
-          {"name": {{networks.overlay}},
-           "name": {{networks.net1 }},
-           "name": {{networks.net2 }} }
-        {% else %}
-          {"name": {{networks.overlay}} ,
-           "name": {{networks.net1}} }
-        {% endif %}
- 
