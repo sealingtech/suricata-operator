@@ -9,6 +9,7 @@ rules:
   resources:
   - pods
   - services
+  - serviceaccounts
   - services/finalizers
   - endpoints
   - persistentvolumeclaims
@@ -78,3 +79,42 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+    - ""
+  resources:
+    - pods
+    - pods/log
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - ""
+  resources:
+    - "pods/exec"
+  verbs:
+    - "create"
