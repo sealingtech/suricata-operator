@@ -7,7 +7,7 @@ spec:
   names:
     kind: Suricata
     listKind: SuricataList
-    plural: suricata
+    plural: suricatas
     singular: suricata
   scope: Namespaced
   versions:
