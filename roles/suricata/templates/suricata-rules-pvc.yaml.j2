@@ -9,8 +9,8 @@ metadata:
   name: {{ suricata.fullname }}-rules-pvc
 spec:
   accessModes:
-  - ReadWriteMany
-  storageClassName: edcop-nfs
+  - ReadWriteOnce
+  storageClassName: rook-ceph-block
   resources:
     requests:
       storage: 5Gi

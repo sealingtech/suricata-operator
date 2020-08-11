@@ -556,7 +556,7 @@ data:
           cluster-id: 98
           buffer-size: 64535
           use-mmap: yes
-          {% if suricataConfig.inline %}
+          {% if suricataConfig.inline -%}
           threads: {{suricataConfig.net0Threads }}
           defrag: no
           copy-mode: ips
@@ -567,7 +567,8 @@ data:
           copy-mode: tap
           tpacket-v3: yes
           {% endif %}
-        {% if suricataConfig.inline %}
+        {%- if suricataConfig.inline %}
+
         - interface: ${INTERFACE2} 
           threads: {{  suricataConfig.net1Threads }} 
           cluster-id: 97
