@@ -41,10 +41,9 @@ spec:
             secretKeyRef:
               {% if suricataConfig.inline == true %}
               name: inline-interface1
-              {% else %}
+              {% else -%}
               name: passive-interface
-              {% endif %}
-              key: interface
+              {% endif %}key: interface
         {%- if suricataConfig.inline == true %}
         
         - name: INTERFACE2
@@ -91,8 +90,7 @@ spec:
                 name: inline-interface1
                 {% else -%}
                 name: passive-interface
-                {%- endif -%}
-                key: interface
+                {% endif %}key: interface
           {% if suricataConfig.inline -%}
           - name: INTERFACE2
             valueFrom: 

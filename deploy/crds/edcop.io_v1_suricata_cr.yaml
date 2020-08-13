@@ -4,4 +4,5 @@ metadata:
   name: example-suricata
 spec:
   # Add fields here
+  # size is just a placeholder
   size: 3
