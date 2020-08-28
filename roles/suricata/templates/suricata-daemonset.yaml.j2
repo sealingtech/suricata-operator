@@ -15,8 +15,9 @@ spec:
       labels:
         app: suricata
     spec:
-      {% if networks.use_host_networking %}host_network: true{% endif %}
-
+      {% if networks.use_host_networking -%}
+      hostNetwork: true
+      {% endif -%}
       initContainers:
       - name: verifynode
         image: {{ images.runner }}
@@ -152,9 +153,9 @@ spec:
      {%- endif %}
 
       restartPolicy: Always
-      {% if networks.use_host_networking %}
+      {% if networks.use_host_networking -%}
       dnsPolicy: ClusterFirstWithHostNet
-      {% else %}
+      {% else -%}
       dnsPolicy: ClusterFirst
       {% endif %}
 
