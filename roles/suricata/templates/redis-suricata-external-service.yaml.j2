@@ -1,4 +1,4 @@
-{% if deploymentOptions.deployment != "standalone"  %}
+{% if deployment_options.deployment != "standalone"  %}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,7 +12,7 @@ spec:
       protocol: "TCP"
       port: 6379
       targetPort: 6379
-      nodePort: {{ deploymentOptions.externalOptions.nodePort }}
+      nodePort: {{ deployment_options.external_options.node_port }}
   selector: 
     app: suricata
 {% endif %}

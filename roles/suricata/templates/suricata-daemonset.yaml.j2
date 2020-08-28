@@ -16,10 +16,10 @@ spec:
         app: suricata
       annotations:
         networks: '[
-        {% if networks.useHostNetworking == true %}
+        {% if networks.use_host_networking == true %}
           {"name": "{{networks.overlay}}"},
         {% else %}
-          {% if suricata.Config.inline %}
+          {% if suricata_config.inline %}
             {"name": "{{networks.overlay}}"},
             {"name": "{{networks.net1 }}"},
             {"name": "{{networks.net2 }}" }
@@ -30,7 +30,7 @@ spec:
         {% endif %}
         ]'
     spec:
-      {% if networks.useHostNetworking %}hostNetwork: true{% endif %}
+      {% if networks.use_host_networking %}host_network: true{% endif %}
 
       initContainers:
       - name: verifynode
@@ -39,12 +39,12 @@ spec:
         - name: INTERFACE1
           valueFrom:
             secretKeyRef:
-              {% if suricataConfig.inline == true %}
+              {% if suricata_config.inline == true %}
               name: inline-interface1
               {% else -%}
               name: passive-interface
               {% endif %}key: interface
-        {%- if suricataConfig.inline == true %}
+        {%- if suricata_config.inline == true %}
         
         - name: INTERFACE2
           valueFrom:
@@ -86,12 +86,12 @@ spec:
           - name: INTERFACE1
             valueFrom: 
               secretKeyRef: 
-                {% if suricataConfig.inline == true -%}
+                {% if suricata_config.inline == true -%}
                 name: inline-interface1
                 {% else -%}
                 name: passive-interface
                 {% endif %}key: interface
-          {% if suricataConfig.inline -%}
+          {% if suricata_config.inline -%}
           - name: INTERFACE2
             valueFrom: 
               secretKeyRef:
@@ -108,11 +108,11 @@ spec:
             name: suricata-rules-pvc
         resources:
           requests:
-            cpu: "{{ suricataConfig.requests.cpu }}"
-            memory: "{{ suricataConfig.requests.memory }}"
+            cpu: "{{ suricata_config.requests.cpu }}"
+            memory: "{{ suricata_config.requests.memory }}"
           limits:
-            cpu: "{{ suricataConfig.limits.cpu }}"
-            memory: "{{ suricataConfig.limits.memory }}"
+            cpu: "{{ suricata_config.limits.cpu }}"
+            memory: "{{ suricata_config.limits.memory }}"
       - name: redis
         image: {{ images.redis }}
         imagePullPolicy: Always
@@ -121,13 +121,13 @@ spec:
           containerPort: 6379
         resources:
           requests:
-            cpu: "{{ redisConfig.requests.cpu }}"
-            memory: "{{ redisConfig.requests.memory }}"
+            cpu: "{{ redis_config.requests.cpu }}"
+            memory: "{{ redis_config.requests.memory }}"
           limits:
-            cpu: "{{ redisConfig.limits.cpu }}"
-            memory: "{{ redisConfig.limits.memory }}"
+            cpu: "{{ redis_config.limits.cpu }}"
+            memory: "{{ redis_config.limits.memory }}"
 
-      {% if deploymentOptions.deployment == "standalone" -%}
+      {% if deployment_options.deployment == "standalone" -%}
       - name: logstash
         image: {{ images.logstash }}
         imagePullPolicy: Always
@@ -136,11 +136,11 @@ spec:
           containerPort: 5044
         resources:
           requests:
-            cpu: "{{ logstashConfig.requests.cpu }}"
-            memory: "{{ logstashConfig.requests.memory }}"
+            cpu: "{{ logstash_config.requests.cpu }}"
+            memory: "{{ logstash_config.requests.memory }}"
           limits:
-            cpu: "{{ logstashConfig.limits.cpu }}"
-            memory: "{{ logstashConfig.limits.memory }}"
+            cpu: "{{ logstash_config.limits.cpu }}"
+            memory: "{{ logstash_config.limits.memory }}"
         volumeMounts:
           - mountPath: /usr/share/logstash/pipeline/
             name: logstash-suricata-pipeline
@@ -157,7 +157,7 @@ spec:
       - name: suricata-rules-pvc
         persistentVolumeClaim:
           claimName: {{ suricata.fullname }}-rules-pvc
-      {% if deploymentOptions.deployment == "standalone" -%}
+      {% if deployment_options.deployment == "standalone" -%}
       - name: logstash-suricata-config
         configMap:
           name: logstash-{{ suricata.fullname  }}-config
@@ -169,4 +169,4 @@ spec:
       restartPolicy: Always
       dnsPolicy: ClusterFirst
       nodeSelector:
-        {{ nodeSelector.label }} : "true"
+        {{ node_selector.label }} : "true"

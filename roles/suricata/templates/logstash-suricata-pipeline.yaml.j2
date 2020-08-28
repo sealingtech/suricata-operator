@@ -1,4 +1,4 @@
-{% if deploymentOptions.deployment ==  "standalone"  %}
+{% if deployment_options.deployment ==  "standalone"  %}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,7 +12,7 @@ data:
         key => "suricata"
         data_type => "list"
         codec => json
-        batch_count => {{ logstashConfig.batchCount }}
+        batch_count => {{ logstash_config.batch_count }}
         threads => 4
       }
     }
