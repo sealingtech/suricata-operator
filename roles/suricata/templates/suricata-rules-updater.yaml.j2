@@ -10,11 +10,6 @@ spec:
     metadata:
       labels:
         app: {{ suricata.name }}-update
-      annotations:
-        "helm.sh/hook": "pre-install"  # Run before all other services start
-        networks: '[
-        { "name": "{{ networks.overlay }}" }
-      ]'
     spec:
       serviceAccountName: {{ suricata.fullname }}
       containers:
@@ -58,10 +53,6 @@ spec:
         metadata:
           labels:
             app: {{ suricata.name }}-update
-          annotations:
-            networks: '[
-            { "name": "{{ networks.overlay }}" }
-          ]'
         spec:
           serviceAccountName: {{ suricata.fullname }}
           containers:
