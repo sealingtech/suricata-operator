@@ -19,13 +19,13 @@ data:
     vars:
       # more specifc is better for alert accuracy and performance
       address-groups:
-        HOME_NET: "{{ suricataConfig.homeNet }}"
+        HOME_NET: "{{ suricata_config.home_net }}"
         #HOME_NET: "[192.168.0.0/16]"
         #HOME_NET: "[10.0.0.0/8]"
         #HOME_NET: "[172.16.0.0/12]"
         #HOME_NET: "any"
 
-        EXTERNAL_NET: "{{ suricataConfig.externalNet }}"
+        EXTERNAL_NET: "{{ suricata_config.external_net }}"
         #EXTERNAL_NET: "any"
 
         HTTP_SERVERS: "$HOME_NET"
@@ -159,7 +159,7 @@ data:
                   # one taken into consideration.
                   header: X-Forwarded-For
             - http:
-                {% if suricataConfig.alertsOnly %} 
+                {% if suricata_config.alerts_only %} 
                 extended: no
                 {% else %}
                 extended: yes
@@ -179,7 +179,7 @@ data:
                 # will fallback to 1 for backwards compatibility.
                 # Note: version 1 is not available with rust enabled
                 version: 2
-                {% if suricataConfig.alertsOnly %}
+                {% if suricata_config.alerts_only %}
                 # Enable/disable this logger. Default: enabled.
                 enabled: no
 
@@ -222,7 +222,7 @@ data:
                 {% endif %}
 
             - tls:
-                {% if suricataConfig.alertsOnly %}
+                {% if suricata_config.alerts_only %}
                 extended: no     # enable this for extended logging information
                 {% else %}
                 extended: yes     # enable this for extended logging information
@@ -243,7 +243,7 @@ data:
                 flows: all       # start or all: 'start' logs only a single drop
             #                     # per flow direction. All logs each dropped pkt.
             - smtp:
-                {% if suricataConfig.alertsOnly %}
+                {% if suricata_config.alerts_only %}
                 extended: no # enable this for extended logging information
                 {% else %}
                 extended: yes # enable this for extended logging information
@@ -556,8 +556,8 @@ data:
           cluster-id: 98
           buffer-size: 64535
           use-mmap: yes
-          {% if suricataConfig.inline -%}
-          threads: {{suricataConfig.net0Threads }}
+          {% if suricata_config.inline -%}
+          threads: {{suricata_config.net0_threads }}
           defrag: no
           copy-mode: ips
           copy-iface: ${INTERFACE2} 
@@ -566,10 +566,10 @@ data:
           copy-mode: tap
           tpacket-v3: yes
           {% endif %}
-        {%- if suricataConfig.inline %}
+        {%- if suricata_config.inline %}
 
         - interface: ${INTERFACE2} 
-          threads: {{  suricataConfig.net1Threads }} 
+          threads: {{  suricata_config.net1_threads }} 
           cluster-id: 97
           defrag: no
           cluster-type: cluster_flow
@@ -1372,7 +1372,7 @@ data:
 
     # Suricata is multi-threaded. Here the threading can be influenced.
     threading:
-      set-cpu-affinity: {{  suricataConfig.setCpuAffinity }} 
+      set-cpu-affinity: {{  suricata_config.set_cpu_affinity }} 
       # Tune cpu affinity of threads. Each family of threads can be bound
       # on specific CPUs.
       #
@@ -1386,25 +1386,25 @@ data:
       #
       cpu-affinity:
         - management-cpu-set:
-            cpu: [ {{ suricataConfig.managementCpuSet }} ]  # include only these cpus in affinity settings
+            cpu: [ {{ suricata_config.management_cpu_set }} ]  # include only these cpus in affinity settings
             mode: "balanced"
             prio:
             default: "low"
         - receive-cpu-set:
-            cpu: [ {{ suricataConfig.receiveCpuSet }} ]  # include only these cpus in affinity settings
+            cpu: [ {{ suricata_config.receive_cpu_set }} ]  # include only these cpus in affinity settings
         - worker-cpu-set:
-            cpu: [ {{ suricataConfig.workerCpuSet }} ]
+            cpu: [ {{ suricata_config.worker_cpu_set }} ]
             mode: "exclusive"
             # Use explicitely 3 threads and don't compute number by using
             # detect-thread-ratio variable:
-            threads: {{ suricataConfig.workerThreads }} 
+            threads: {{ suricata_config.worker_threads }} 
             prio:
               low: [ 0 ]
               medium: [ "1-2" ]
               high: [ 3 ]
               default: "medium"
         - verdict-cpu-set:
-            cpu: [ {{ suricataConfig.verdictCpuSet }} ]
+            cpu: [ {{ suricata_config.verdict_cpu_set }} ]
             prio:
               default: "high"
       #
@@ -1898,7 +1898,7 @@ data:
 
     # Remote rule sources. Simply a list of URLs.
     sources:
-      {% for source in suricataConfig.rulesSources %}
+      {% for source in suricata_config.rules_sources %}
       - {{ source }}
       {% endfor %}
 
@@ -1927,7 +1927,7 @@ data:
     # group:emerging-icmp.rules
     # group:emerging-dos
     # group:emerging*
-    {% for rule in suricataConfig.ruleModifications.enableConf %}
+    {% for rule in suricata_config.rule_modifications.enable_conf %}
     {{ rule }}
     {% endfor %}
   disable.conf: |
@@ -1946,7 +1946,7 @@ data:
     # group:emerging-icmp.rules
     # group:emerging-dos
     # group:emerging*
-    {% for rule in suricataConfig.ruleModifications.disableConf %}
+    {% for rule in suricata_config.rule_modifications.disable_conf %}
     {{ rule }}
     {% endfor %}
   drop.conf: |
@@ -1961,7 +1961,7 @@ data:
     #
     # re:heartbleed
     # re:MS(0[7-9]|10)-\d+
-    {% for rule in suricataConfig.ruleModifications.disableConf %}
+    {% for rule in suricata_config.rule_modifications.disable_conf %}
     {{ rule }}
     {% endfor %}
   modify.conf: |
@@ -1979,6 +1979,6 @@ data:
     # For compatibility, most Oinkmaster modifysid lines should work as
     # well.
     #modifysid * "^drop(.*)noalert(.*)" | "alert${1}noalert${2}"
-    {% for rule in suricataConfig.ruleModifications.disableConf %}
+    {% for rule in suricata_config.rule_modifications.disable_conf %}
     {{ rule }}
     {% endfor %}

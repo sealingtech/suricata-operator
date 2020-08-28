@@ -1,4 +1,4 @@
-{% if deploymentOptions.deployment == "standalone"  %}
+{% if deployment_options.deployment == "standalone"  %}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,8 +10,8 @@ data:
     # Xms represents the initial size of total heap space
     # Xmx represents the maximum size of total heap space
 
-    -Xms{{  logstashConfig.initialJvmHeap }}
-    -Xmx{{  logstashConfig.maxJvmHeap }}
+    -Xms{{  logstash_config.initial_jvm_heap }}
+    -Xmx{{  logstash_config.max_jvm_heap }}
 
     ################################################################
     ## Expert settings
@@ -139,16 +139,16 @@ data:
     #
     #   # How many worker threads execute the Filters+Outputs stage of the pipeline
     #   pipeline.workers: 1 (actually defaults to number of CPUs)
-    pipeline.workers: {{ logstashConfig.threads }}
+    pipeline.workers: {{ logstash_config.threads }}
     #
     #   # How many events to retrieve from inputs before sending to filters+workers
-    pipeline.batch.size: {{  logstashConfig.pipelineBatchSize }}
+    pipeline.batch.size: {{  logstash_config.pipeline_batch_size }}
     #
     #   # How long to wait before dispatching an undersized batch to filters+workers
     #   pipeline.batch.delay: 5
     #
     #   # How many workers should be used per output plugin instance
-    pipeline.output.workers:  {{  logstashConfig.pipelineOutputWorkers }}
+    pipeline.output.workers:  {{  logstash_config.pipeline_output_workers }}
     #
     #   # Internal queuing model, "memory" for legacy in-memory based queuing and
     #   # "persisted" for disk-based acked queueing. Defaults is memory
