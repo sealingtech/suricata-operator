@@ -14,21 +14,6 @@ spec:
       name: {{ suricata.name }} 
       labels:
         app: suricata
-      annotations:
-        networks: '[
-        {% if networks.useHostNetworking == true %}
-          {"name": "{{networks.overlay}}"},
-        {% else %}
-          {% if suricata.Config.inline %}
-            {"name": "{{networks.overlay}}"},
-            {"name": "{{networks.net1 }}"},
-            {"name": "{{networks.net2 }}" }
-          {% else %}
-            {"name": "{{networks.overlay}}"} ,
-            {"name": "{{networks.net1}}" }
-          {% endif %}
-        {% endif %}
-        ]'
     spec:
       {% if networks.useHostNetworking %}hostNetwork: true{% endif %}
 
@@ -167,6 +152,11 @@ spec:
      {%- endif %}
 
       restartPolicy: Always
+      {% if networks.use_host_networking %}
+      dnsPolicy: ClusterFirstWithHostNet
+      {% else %}
       dnsPolicy: ClusterFirst
+      {% endif %}
+
       nodeSelector:
         {{ nodeSelector.label }} : "true"
