@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ suricata.fullname }}
+  name: {{ meta.name }}-suricata-ds
   namespace: default
   labels:
     app: suricata
@@ -11,7 +11,7 @@ spec:
       app: suricata
   template:
     metadata:
-      name: {{ suricata.name }} 
+      name: {{ meta.name }}-suricata-ds
       labels:
         app: suricata
     spec:
@@ -139,17 +139,17 @@ spec:
         emptyDir: {}
       - name: suricata-config
         configMap:
-          name: {{ suricata.fullname }}-config
+          name: {{ meta.name }}-suricata-config
       - name: suricata-rules-pvc
         persistentVolumeClaim:
-          claimName: {{ suricata.fullname }}-rules-pvc
+          claimName: {{ meta.name }}-suricata-rules-pvc
       {% if deployment_options.deployment == "standalone" -%}
       - name: logstash-suricata-config
         configMap:
-          name: logstash-{{ suricata.fullname  }}-config
+          name: {{ meta.name }}-suricata-logstash-config
       - name: logstash-suricata-pipeline
         configMap:
-          name: logstash-{{ suricata.fullname }}-pipeline
+          name: {{ meta.name }}-suricata-logstash-pipeline
      {%- endif %}
 
       restartPolicy: Always

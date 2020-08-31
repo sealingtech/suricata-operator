@@ -1,24 +1,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ suricata.fullname }}-update
-  namespace: {{ suricata.namespace }}
+  name: '{{ meta.name }}-suricata-update'
+  namespace: '{{ meta.namespace }}'
   labels:
-    app: {{ suricata.name }}-update
+    app: {{ meta.name }}-suricata-update
 spec:
   template:
     metadata:
       labels:
-        app: {{ suricata.name }}-update
+        app: '{{ meta.name }}-suricata-update'
     spec:
-      serviceAccountName: {{ suricata.fullname }}
+      serviceAccountName: '{{ meta.name }}'
       containers:
       - name: suricata-rules
         image: {{ images.suricata }}
         command: [ "bash", "-c", "/update-entrypoint.sh" ]
-        env:
-        - name: CHART_PREFIX
-          value: {{ suricata.fullname }}
         volumeMounts:
         - name: suricata-config
           mountPath: /etc/suricata/
@@ -27,10 +24,10 @@ spec:
       volumes:
       - name: suricata-config
         configMap: 
-          name: {{ suricata.fullname }}-config
+          name: {{ meta.name }}-suricata-config
       - name: suricata-rules-pvc
         persistentVolumeClaim:
-          claimName: {{ suricata.fullname }}-rules-pvc
+          claimName: '{{ meta.name }}-suricata-rules-pvc'
       restartPolicy: OnFailure 
       dnsPolicy: ClusterFirst
         
@@ -40,9 +37,9 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ suricata.fullname }}-update
+  name: '{{ meta.name }}-suricata-update-cj'
   labels:
-    app: {{ suricata.name }}-update
+    app: '{{ meta.name }}-suricata-update-cj'
 spec:
   schedule: "{{ suricata_config.rules_update_schedule }}"
   successfulJobsHistoryLimit: 1
@@ -52,16 +49,13 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ suricata.name }}-update
+            app: '{{ meta.name }}-suricata-update'
         spec:
-          serviceAccountName: {{ suricata.fullname }}
+          serviceAccountName: '{{ meta.name }}-suricata-sa }}'
           containers:
           - name: suricata-update
             image: {{ images.suricata }}
             command: [ "bash", "-c", "/update-entrypoint.sh" ]
-            env:
-            - name: CHART_PREFIX
-              value: {{ suricata.fullname  }}
             volumeMounts:
             - name: suricata-config
               mountPath: /etc/suricata/
@@ -70,13 +64,13 @@ spec:
           volumes:
           - name: suricata-update-config
             configMap: 
-              name: {{ suricata.fullname }}-config
+              name: '{{ meta.name }}-suricata-config'
           - name: suricata-rules-pvc
             persistentVolumeClaim:
-              claimName: {{ suricata.fullname }}-rules-pvc
+              claimName: '{{ meta.name }}-suricata-rules-pvc'
           - name: suricata-config
             configMap:
-              name: {{ suricata.fullname }}-config
+              name: '{{ meta.name }}-suricata-config'
           restartPolicy: OnFailure 
           dnsPolicy: ClusterFirst
 {% endif %}
