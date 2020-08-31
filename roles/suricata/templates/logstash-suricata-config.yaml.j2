@@ -2,8 +2,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: logstash-{{ suricata.fullname }}-config
-  namespace: {{ suricata.namespace }}
+  name: {{ meta.name }}-suricata-logstash-config
+  namespace: {{ meta.namespace }}
 data:
   jvm.options: |
     ## JVM configuration

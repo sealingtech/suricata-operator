@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   annotations: {}
   labels:
-    created-by: {{ suricata.name }}-update
-    name: {{ suricata.fullname }}-rules-pvc
-  namespace: {{ suricata.namespace }}
-  name: {{ suricata.fullname }}-rules-pvc
+    created-by: {{ meta.name }}-suricata-update
+    name: {{ meta.name }}-rules-pvc
+  namespace: {{ meta.namespace }}
+  name: {{ meta.name }}-suricata-rules-pvc
 spec:
   accessModes:
   - ReadWriteOnce
