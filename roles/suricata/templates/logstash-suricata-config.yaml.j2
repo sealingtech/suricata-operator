@@ -24,7 +24,8 @@ data:
     ################################################################
 
     ## GC configuration
-    -XX:+UseParNewGC
+    #  No longer in new Logstash
+    #-XX:+UseParNewGC
     -XX:+UseConcMarkSweepGC
     -XX:CMSInitiatingOccupancyFraction=75
     -XX:+UseCMSInitiatingOccupancyOnly
@@ -106,7 +107,7 @@ data:
     http.host: "0.0.0.0"
     path.config: /usr/share/logstash/pipeline
     xpack.monitoring.enabled: true
-    xpack.monitoring.elasticsearch.url: http://data-service:9200
+    xpack.monitoring.elasticsearch.hosts: http://data-service:9200
     xpack.monitoring.elasticsearch.username: logstash_system
     xpack.monitoring.elasticsearch.password: changeme
   pipelines.yml : |

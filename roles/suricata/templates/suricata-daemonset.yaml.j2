@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ meta.name }}-suricata-ds
-  namespace: default
+  namespace: {{ meta.namespace }}
   labels:
     app: suricata
 spec:

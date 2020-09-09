@@ -11,7 +11,7 @@ spec:
       labels:
         app: '{{ meta.name }}-suricata-update'
     spec:
-      serviceAccountName: '{{ meta.name }}'
+      serviceAccountName: '{{ meta.name }}-suricata-sa'
       containers:
       - name: suricata-rules
         image: {{ images.suricata }}

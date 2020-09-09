@@ -1,13 +1,9 @@
 # EDCOP Suricata Chart values
-suricata:
-  fullname: suricata-fullname
-  name: suricata-name
-  namespace: default
 images:
   #Repositories to pull images from
   suricata: gcr.io/edcop-dev/mbaker-suricata:v5.0.3
-  logstash: docker.elastic.co/logstash/logstash:6.4.2
-  redis: redis:4.0.9
+  logstash: docker.elastic.co/logstash/logstash:7.9.1
+  redis: redis:6.0.7
   runner: gcr.io/edcop-public/runner:8
 networks:
   # Net 1 is the name of the first interface
