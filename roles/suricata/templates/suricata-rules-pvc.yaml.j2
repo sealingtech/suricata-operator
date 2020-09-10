@@ -10,7 +10,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
-  storageClassName: rook-ceph-block
+  persistentVolumeReclaimPolicy: delete
   resources:
     requests:
       storage: 5Gi
